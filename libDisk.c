@@ -1,11 +1,23 @@
+#include <stdio.h>
+#include <stdlib.h>
 #define BLOCKSIZE 256
+// wondering where we need to define this, I'll keep it here for now
+// because its needed in tinyFS, but also here.
 
-typedef struct block {
-    char *filename;
-    char *disk;
-} block;
+typedef struct disk {
+    FILE *fileptr;
+    char *buffer;
+} disk;
 
+// I'm thinking of storing these in a linked list? what do we think?
+
+// Is there a max number of disks to look at?
 int openDisk(char *filename, int nBytes) {
+    int clip = nBytes % BLOCKSIZE;
+
+    if (clip != 0) {
+        nBytes = nBytes - clip;
+    } 
     if (nBytes == 0) {
         exit(1);
         // return an existing disk with the filename value.
@@ -14,6 +26,20 @@ int openDisk(char *filename, int nBytes) {
         exit(1);
         // RETURN FAILURE
     }
+
+    // Loop through the disk list, check if the filename is already used,
+    // if so, then open it up
+
+    // Make a new disk here
+    block *newblock = malloc();
+    
+    // open the file with read and write permissions.
+    // maybe there is another way to do this without fopen, but lmk if theres something else
+    FILE *fp = *fopen(filename, "r+");
+
+
+
+    
     // loop through existing disks, and check filenames.
     // if its the same, replace it at that index.
     // if there are none of the same, make a new disk.

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define BLOCKSIZE 256
+#include "libDisk.h"
+#include "tinyFS.h"
 // wondering where we need to define this, I'll keep it here for now
 // because its needed in tinyFS, but also here.
 
@@ -31,11 +32,11 @@ int openDisk(char *filename, int nBytes) {
     // if so, then open it up
 
     // Make a new disk here
-    block *newblock = malloc();
+    //block *newblock = malloc();
     
     // open the file with read and write permissions.
     // maybe there is another way to do this without fopen, but lmk if theres something else
-    FILE *fp = *fopen(filename, "r+");
+    //FILE *fp = *fopen(filename, "r+");
 
 
 
@@ -43,13 +44,19 @@ int openDisk(char *filename, int nBytes) {
     // loop through existing disks, and check filenames.
     // if its the same, replace it at that index.
     // if there are none of the same, make a new disk.
+    return -1;
 
 }
 int closeDisk(int disk) {
     // free up the index given by the value.
-
+    return -1;
 }
+
 int readBlock(int disk, int bNum, void *block) {
     // read byte offsets, 
+    return -1;
 }
-int writeBlock(int disk, int bNum, void *block);
+
+int writeBlock(int disk, int bNum, void *block){
+    return -1;
+}

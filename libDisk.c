@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 
@@ -34,18 +35,109 @@ int openDisk(char *filename, int nBytes) {
         }
     }
 
+    // initialize the file with 0's
+    int i;
+    for (i = 0; i < nBytes; i++) {
+         if (write(fd, "\0", 1) == -1) {
+            return EDISKWRITE; 
+        }
+    }
+
    return fd;
 }
+
 int closeDisk(int disk) {
-    // free up the index given by the value.
-    return -1;
+
+    // validate file descriptor
+    if (disk < 0) {
+        return EDISKNUMBER;
+    }
+
+    if (close(disk) == -1) {
+        return EDISKCLOSE;
+    }
+
+   return 0;
 }
 
 int readBlock(int disk, int bNum, void *block) {
-    // read byte offsets, 
-    return -1;
+    // validate file descriptor
+    if (disk < 0) {
+      return EDISKNUMBER;
+    }
+
+    // validate block number
+    if (bNum < 0){
+        return EBLOCKNUMBER;
+    }
+
+    // validate block memory
+    if (block == NULL){
+        return EBLOCKNULL;
+    }
+
+    int diskSize = -1;
+
+    // get the disk size
+    if ((diskSize = lseek(disk, 0, SEEK_END)) == -1) {
+      return EDISKSEEK;
+    }
+
+    // validate bNum is within the disk size
+    if (((bNum + 1) * BLOCKSIZE) > diskSize) {
+        return EBLOCKNUMBER;
+    }
+
+    // set seek position
+    if (lseek(disk, bNum * BLOCKSIZE, SEEK_SET) != (bNum * BLOCKSIZE)) {
+        return EDISKSEEK;
+    }
+
+    // read a block
+    if (read(disk, block, BLOCKSIZE) == -1) {
+        return EBLOCKREAD;
+    }
+
+    return 0;
 }
 
-int writeBlock(int disk, int bNum, void *block){
-    return -1;
+int writeBlock(int disk, int bNum, void *block) {
+    // validate file descriptor
+    if (disk < 0) {
+      return EDISKNUMBER;
+    }
+
+    // validate block number
+    if (bNum < 0){
+        return EBLOCKNUMBER;
+    }
+
+    // validate block memory
+    if (block == NULL){
+        return EBLOCKNULL;
+    }
+
+    int diskSize = -1;
+
+    // get the disk size
+    if ((diskSize = lseek(disk, 0, SEEK_END)) == -1) {
+      return EDISKSEEK;
+    }
+
+    // validate bNum is within the disk size
+    if (((bNum + 1) * BLOCKSIZE) > diskSize) {
+        return EBLOCKNUMBER;
+    }
+
+    // set seek position
+    if (lseek(disk, bNum * BLOCKSIZE, SEEK_SET) != (bNum * BLOCKSIZE)) {
+        return EDISKSEEK;
+    }
+
+    // write a block
+    if (write(disk, block, BLOCKSIZE) == -1) {
+        return EBLOCKWRITE;
+    }
+
+    return 0;
 }

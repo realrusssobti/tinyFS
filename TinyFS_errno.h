@@ -9,4 +9,9 @@
 // Take a look at man 3 errno on the UNIX* machines for examples of the types of errors you
 // might catch and report.
 
+#define	EDISKSIZE	-1	/* Invalid disk size	*/
+#define	EFILENAME	-2	/* Invalid file name	*/
+#define EFILENOTEXIST -3 /* File does not exist	*/
+#define EFILECREATE -4 /* Failed to create the file	*/
+
 #endif

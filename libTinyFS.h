@@ -1,6 +1,8 @@
 #ifndef LIBTINYFS
 #define LIBTINYFS
 
+typedef int fileDescriptor;
+
 /* Makes a blank TinyFS file system of size nBytes on the unix file
 specified by ‘filename’. This function should use the emulated disk
 library to open the specified unix file, and upon success, format the

@@ -1,6 +1,54 @@
 #ifndef LIBTINYFS
 #define LIBTINYFS
 
+#include "tinyFS.h"
+
+// These are the different kinds of blocks: SuperBlock, Inode, Data, Free
+typedef struct superBlock{
+	uint8_t Type;
+	uint8_t magicNumber;
+	uint8_t rootBlockNumber;
+	uint8_t freeBlocksRoot;
+	char empty[BLOCKSIZE - 4];
+
+} superBlock;
+
+typedef struct inode{
+	uint8_t Type;
+	uint8_t magicNumber;
+	char name[FILENAME_LEN +1];
+	uint8_t startBlock
+	uint8_t nextInode;
+	uint8_t fp;
+	time_t creationTime;
+	time_t lastAccessTime;
+	uint8_t empty[BLOCKSIZE - 14 - 2*sizeof (time_t)];
+} inode;
+
+typedef struct DataBlock{
+	uint8_t Type;
+	uint8_t magicNumber;
+	uint8_t data[BLOCKSIZE - 3];
+	uint8_t nextBlock;
+} DataBlock;
+
+typedef struct freeBlock{
+	uint8_t Type;
+	uint8_t magicNumber;
+	uint8_t nextFreeBlock;
+	uint8_t empty[BLOCKSIZE - 3];
+} freeBlock;
+
+
+// Dynamic resource table implemented as a singly linked list
+typedef struct DynamicResourceTable{
+   struct DynamicResourceTable *next;
+   fileDescriptor fd;
+   char name[FILENAME_LEN+1];
+   time_t creationTime;
+   time_t lastAccessTime;
+} DynamicResourceTable;
+
 typedef struct resourceTableNode{
    fileDescriptor fd;
    int inodeIndex;

@@ -1,7 +1,11 @@
 #ifndef LIBTINYFS
 #define LIBTINYFS
 
-typedef int fileDescriptor;
+typedef struct resourceTableNode{
+   fileDescriptor fd;
+   int inodeIndex;
+   char name[FILENAME_LEN];
+} resNode;
 
 /* Makes a blank TinyFS file system of size nBytes on the unix file
 specified by ‘filename’. This function should use the emulated disk

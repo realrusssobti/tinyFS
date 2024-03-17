@@ -27,6 +27,7 @@ int openDisk(char *filename, int nBytes) {
         if ((fd = open(filename, O_RDWR)) == -1) {
             return EFILENOTEXIST;
         }
+        return fd;
     }
     else {
         if ((fd = open(filename, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR |

@@ -3,6 +3,8 @@
 
 #include "tinyFS.h"
 
+#define uint8_t unsigned char
+#include <time.h>
 // These are the different kinds of blocks: SuperBlock, Inode, Data, Free
 typedef struct superBlock{
 	uint8_t Type;
@@ -17,7 +19,7 @@ typedef struct inode{
 	uint8_t Type;
 	uint8_t magicNumber;
 	char name[FILENAME_LEN +1];
-	uint8_t startBlock
+	uint8_t startBlock;
 	uint8_t nextInode;
 	uint8_t fp;
 	time_t creationTime;
@@ -53,6 +55,7 @@ typedef struct resourceTableNode{
    fileDescriptor fd;
    int inodeIndex;
    char name[FILENAME_LEN];
+   int fp;
 } resNode;
 
 /* Makes a blank TinyFS file system of size nBytes on the unix file

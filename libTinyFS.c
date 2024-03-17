@@ -58,7 +58,7 @@ int tfs_mount(char *diskname){
         // exit with error
     }
 
-    char * buffer;
+    uint8_t * buffer;
     int diskSize = lseek(diskNum, 0, SEEK_END)  / 256;
     int i;
     // check that all the blocks have the correct checksum: 0x44
@@ -87,7 +87,7 @@ int tfs_unmount(void){
 
 fileDescriptor tfs_openFile(char *name){
     int location;
-    char * superblock, *newInode;
+    uint8_t superblock[BLOCKSIZE], newInode[BLOCKSIZE];
     // if the filetable hasn't been initialized, do it
     if (fileTable == NULL) {
         fileTable = malloc(sizeof(list_t));
@@ -103,13 +103,17 @@ fileDescriptor tfs_openFile(char *name){
         readBlock(mounted, location, newInode);
         superblock[2] = newInode[2];
         
-        // set it that there is no data for this inode
-        newInode[2] = -1;
 
         // write changes back to the file
         writeBlock(mounted,0,superblock);
-        writeBlock(mounted,location,newInode);
+    } else {
+        readBlock(mounted, location, newInode);
     }
+    
+    // set it that there is no data for this inode
+    newInode[2] = -1;
+    writeBlock(mounted,location,newInode);
+    
     // setup a new node to add to the fileTable
     newNode->fd = fdmax++;
     newNode->inodeIndex = location;
@@ -129,10 +133,18 @@ int tfs_closeFile(fileDescriptor FD){
 }
 
 int tfs_writeFile(fileDescriptor FD,char *buffer, int size){
+    // create a buffer
+    uint8_t buffer[BLOCKSIZE] = "";
+
+    // cut buffer into chunks of 256 - 4, populate.
+    // Set the inode to point to that data.
+
     return 0;
 }
 
 int tfs_deleteFile(fileDescriptor FD){
+    // replace blocks with empty blocks,
+    // put empty blocks on the queue
     return 0;
 }
 

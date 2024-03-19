@@ -47,10 +47,10 @@ main ()
   if (tfs_mount (DEFAULT_DISK_NAME) < 0)	/* if mount fails */
     {
       tfs_mkfs (DEFAULT_DISK_NAME, DEFAULT_DISK_SIZE);	/* then make a new disk */
-      if (tfs_mount (DEFAULT_DISK_NAME) < 0)	/* if we still can't open it... */
+      if (tfs_mount(DEFAULT_DISK_NAME) < 0)	/* if we still can't open it... */
 	{
 	  perror ("failed to open disk");	/* then just exit */
-	  return;
+	  return -1;
 	}
     }
 
@@ -59,14 +59,14 @@ main ()
   if (fillBufferWithPhrase (phrase1, afileContent, afileSize) < 0)
     {
       perror ("failed");
-      return;
+      return -1;
     }
 
   bfileContent = (char *) malloc (bfileSize * sizeof (char));
   if (fillBufferWithPhrase (phrase2, bfileContent, bfileSize) < 0)
     {
       perror ("failed");
-      return;
+      return -1;
     }
 
 /* print content of files for debugging */
@@ -128,6 +128,8 @@ main ()
 
 /* now bfile tests */
   bFD = tfs_openFile ("bfile");
+   printf("bFD: %d\n", bFD);
+//   tfs_displayFragments();
 
   if (bFD < 0)
     {
@@ -142,6 +144,8 @@ main ()
 	}
       else
 	printf ("Successfully written to bfile\n");
+
+//	   tfs_displayFragments();
     }
   else
     {

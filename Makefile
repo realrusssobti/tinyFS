@@ -24,5 +24,15 @@ diskTest.o: diskTest.c libDisk.h libDisk.o
 diskTest: diskTest.o libDisk.o
 	$(CC) $(CFLAGS) -o diskTest diskTest.o libDisk.o
 
+frag_test.o: frag_test.c libTinyFS.h tinyFS.h TinyFS_errno.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+frag_test: frag_test.o libTinyFS.o libDisk.o linkedList.o
+	$(CC) $(CFLAGS) -o frag_test frag_test.o libTinyFS.o libDisk.o linkedList.o
+
+tfsTest.o: tfsTest.c libTinyFS.h tinyFS.h TinyFS_errno.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+tfsTest: tfsTest.o libTinyFS.o libDisk.o linkedList.o
+
+all: tinyFSDemo diskTest frag_test tfsTest
 clean:
 	rm -f $(OBJS) tinyFSDemo

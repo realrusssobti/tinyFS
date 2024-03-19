@@ -19,4 +19,5 @@ int addtoList(list_t *list, void * data);
 void * removeVal(int idx, list_t *list);
 int cleanListFree(list_t * list);
 void * searchListFD(list_t *list, fileDescriptor fd);
+void printList(list_t *list);
 #endif

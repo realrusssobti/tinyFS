@@ -47,7 +47,7 @@ int tfs_mkfs(char *filename, int nBytes){
 
     //write the contents to the super block.
     writeBlock(diskNum, 0, buffer);
-    
+
     // set the type for the empty blocks
     buffer[0] = 4;
     int diskSize = lseek(diskNum, 0, SEEK_END) / 256;
@@ -120,9 +120,9 @@ fileDescriptor tfs_openFile(char *name){
         fileTable = makeList();
     }
 
-    // malloc a new node 
+    // malloc a new node
     resNode *newNode = malloc(sizeof(resNode));
-    // check if an inode exists for a file. If it doesn't make one. 
+    // check if an inode exists for a file. If it doesn't make one.
     if ((location = checkFileExists(name)) == 0) {
         // read the next free block off the superblock
         readBlock(mounted, 0, superblock);
@@ -131,14 +131,14 @@ fileDescriptor tfs_openFile(char *name){
         // read that block to set the superblock's new free list value
         readBlock(mounted, location, newInode);
         superblock[2] = newInode[2];
-        
+
         // write changes back to the file
         writeBlock(mounted,0,superblock);
     } else {
         // if it exists, use it and proceed.
         readBlock(mounted, location, newInode);
     }
-    
+
     // set it that there is no data for this inode
     newInode[2] = 0;
     // set the type to be an inode
@@ -147,10 +147,10 @@ fileDescriptor tfs_openFile(char *name){
     strncpy(newInode + 4, name, 8);
     // write back to disk
     writeBlock(mounted,location,newInode);
-    
+
     // setup a new node to add to the fileTable
     newNode->fd = fdmax++;
-    newNode->fp = 0;
+    newNode->fp = 0; // CHANGE THIS
     newNode->inodeIndex = location;
     strncpy(newNode->name, name, FILENAME_LEN);
 
@@ -164,139 +164,142 @@ int tfs_closeFile(fileDescriptor FD){
     resNode *data;
     // remove from the filetable
     removeVal(FD, fileTable);
-    // the online one just got rid of everything when closeFile was called... 
+    // the online one just got rid of everything when closeFile was called...
     // We can maybe do better? I did it like the online one...
-    cleanListFree(fileTable);
+//    cleanListFree(fileTable);
+	free(fileTable);
     fdmax = 1;
     fileTable = NULL;
-    tfs_unmount();
+//    tfs_unmount();
     return 0;
 }
 
 
 int tfs_writeFile(fileDescriptor FD,char *buffer, int size){
-    // create buffers for what to write, the super block, and extra blocks.
-    uint8_t * message;
-    uint8_t block[BLOCKSIZE] = "";
-    uint8_t super[BLOCKSIZE] = "";
+	// create buffers for what to write, the super block, and extra blocks.
+	uint8_t * message;
+	uint8_t block[BLOCKSIZE] = "";
+	uint8_t super[BLOCKSIZE] = "";
 
-    int blockNum, inode, block_size;
-    resNode *n;
-    // checks if the file is in the FD.
-    n = searchListFD(fileTable, FD);
+	int blockNum, inode, block_size;
+	resNode *n;
+	// checks if the file is in the FD.
+	n = searchListFD(fileTable, FD);
 
-    if (n == NULL) {
-        return -1;
-        //error
-    }
+	if (n == NULL) {
+		printf("Error: File not found in file table.\n");
+		// print the file table
+//		printList(fileTable);
+		return -1;
+		//error
+	}
 	inode = n->fd;
-    // read the inode to block
-    readBlock(mounted, inode, block);
-    // read the superblock to super
-    readBlock(mounted, 0, super);
-    // pick up the first free block
-    blockNum = super[2];
-    
-    // set the inode to point to next empty block, set the size
-    block[2] = blockNum;
-    // stores the size as a string of characters.
-    sprintf(block + 13, "%c", size);
+	// read the inode to block
+	readBlock(mounted, inode, block);
+	// read the superblock to super
+	readBlock(mounted, 0, super);
+	// pick up the first free block
+	blockNum = super[2];
 
-    writeBlock(mounted, inode, block);
+	// set the inode to point to next empty block, set the size
+	block[2] = blockNum;
+	// stores the size as a string of characters.
+	sprintf(block + 13, "%c", size);
 
-    // find the max amount of blocks to use
-    int until = size / (BLOCKSIZE - 4) + 1;
-    int i;
-    // write all the blocks
-    for (i = 0; i < until; i++) {
-        readBlock(mounted, blockNum, block);
-        message = calloc(sizeof(char), 256);
-        
-        message[0] = 3;
-        message[1] = 'D';
-        // take the first BLKSIZE - 4 and put it in a block
-        if (i != until - 1) {
-            message[2] = block[2];
-            block_size = BLOCKSIZE - 4;
-        } else {
-            // if the last block, don't write another location
-            // only write as much as needed.
-            message[2] = 0;
-            block_size = size % (BLOCKSIZE - 4);
-        }
+	writeBlock(mounted, inode, block);
 
-        strncpy(message + 4, buffer + (i*(BLOCKSIZE-4)), block_size); 
-        
-        // write that block
-        writeBlock(mounted, blockNum, message);
-        free(message);
-        blockNum = block[2];
-    }
-    // set the free list to the last pointed free
-    super[2] = blockNum;
-    writeBlock(mounted, 0, super);
+	// find the max amount of blocks to use
+	int until = size / (BLOCKSIZE - 4) + 1;
+	int i;
+	// write all the blocks
+	for (i = 0; i < until; i++) {
+		readBlock(mounted, blockNum, block);
+		message = calloc(sizeof(char), 256);
 
-    
+		message[0] = 3;
+		message[1] = 'D';
+		// take the first BLKSIZE - 4 and put it in a block
+		if (i != until - 1) {
+			message[2] = block[2];
+			block_size = BLOCKSIZE - 4;
+		} else {
+			// if the last block, don't write another location
+			// only write as much as needed.
+			message[2] = 0;
+			block_size = size % (BLOCKSIZE - 4);
+		}
 
-    return 0;
+		strncpy(message + 4, buffer + (i*(BLOCKSIZE-4)), block_size);
+
+		// write that block
+		writeBlock(mounted, blockNum, message);
+		printf("Writing block number %d\n", blockNum); // Logging the block number being written
+		free(message);
+		blockNum = block[2];
+	}
+	// set the free list to the last pointed free
+	super[2] = blockNum;
+	writeBlock(mounted, 0, super);
+
+	printf("Finished writing file.\n"); // Logging the end of the function
+
+	return 0;
 }
-
 int tfs_deleteFile(fileDescriptor FD){
-    // get blocks, this is same as writefile
-    uint8_t block[BLOCKSIZE] = "";
-    uint8_t super[BLOCKSIZE] = "";
-    uint8_t * empty = calloc(sizeof(char), 256);
-    int nextBlock, inode, curr, former;
-    resNode *n;
-    n = searchListFD(fileTable, FD);
+	// get blocks, this is same as writefile
+	uint8_t block[BLOCKSIZE] = "";
+	uint8_t super[BLOCKSIZE] = "";
+	uint8_t * empty = calloc(sizeof(char), 256);
+	int nextBlock, inode, curr, former;
+	resNode *n;
+	n = searchListFD(fileTable, FD);
 	if (n == NULL) {
 		return -1;
 		//error
 	}
-    inode = n->fd;
-    if (inode == NULL) {
-        return -1;
-        //error
-    }
-    readBlock(mounted, inode, block);
-    readBlock(mounted, 0, super);
+	inode = n->fd;
+	if (inode == NULL) {
+		return -1;
+		//error
+	}
+	readBlock(mounted, inode, block);
+	readBlock(mounted, 0, super);
 
-    //changes here. incrementally remove blocks associated to a file.
-    curr = inode;
-    former = super[2];
+	//changes here. incrementally remove blocks associated to a file.
+	curr = inode;
+	former = super[2];
 
-    super[2] = inode;
-    // the inode is now free. It is inserted at the start of the list
-    writeBlock(mounted, 0, super);
-    nextBlock = block[2];
+	super[2] = inode;
+	// the inode is now free. It is inserted at the start of the list
+	writeBlock(mounted, 0, super);
+	nextBlock = block[2];
 
-    // setup empty blocks
-    empty[0] = 4;
-    empty[1] = 'D';
-    
-    // while the end of the block chain isn't reached (designated by next block = 0)
-    while (block[2] != 0) {
-        // choose the next block in the chain
-        empty[2] = nextBlock;
-        // push empty onto the current block
-        writeBlock(mounted, curr, empty);
-        // read the next block
-        readBlock(mounted, nextBlock, block);
-        // sets new block to current
-        curr = nextBlock;
-        // makes the next block the block pointed to by the just read block
-        nextBlock = block[2];
-        
-    }
-    // sets the former front of the empty list to the end of the just added empty block
-    empty[2] = former;
-    writeBlock(mounted, curr, empty);
-    //free the calloc buffer.
-    free(empty);
+	// setup empty blocks
+	empty[0] = 4;
+	empty[1] = 'D';
 
-    // this goes all the way to unmount in the sample diana sent, and in what I wrote
-    tfs_closeFile(FD);
-    return 0;
+	// while the end of the block chain isn't reached (designated by next block = 0)
+	while (block[2] != 0) {
+		// choose the next block in the chain
+		empty[2] = nextBlock;
+		// push empty onto the current block
+		writeBlock(mounted, curr, empty);
+		// read the next block
+		readBlock(mounted, nextBlock, block);
+		// sets new block to current
+		curr = nextBlock;
+		// makes the next block the block pointed to by the just read block
+		nextBlock = block[2];
+	}
+	// sets the former front of the empty list to the end of the just added empty block
+	empty[2] = former;
+	writeBlock(mounted, curr, empty);
+	//free the calloc buffer.
+	free(empty);
+
+	// this goes all the way to unmount in the sample diana sent, and in what I wrote
+	tfs_closeFile(FD);
+	return 0;
 }
 
 int tfs_readByte(fileDescriptor FD, char *buffer){
@@ -305,6 +308,9 @@ int tfs_readByte(fileDescriptor FD, char *buffer){
     int nextBlock, inode, i, former, fp, bnum;
     resNode *n;
     n = searchListFD(fileTable, FD);
+	if (n == NULL) {
+		return -1;
+	}
     inode = n->fd;
     fp = n->fp;
     if (inode == NULL) {
@@ -323,11 +329,16 @@ int tfs_readByte(fileDescriptor FD, char *buffer){
         nextBlock = block[2];
         readBlock(mounted, nextBlock, block);
     }
+	// check if the file is at the end
+	if (block[0] == '\0') {
+		return -1;
+	}
     // copy the exact location from the fp and the block offset, put it in buffer
     strncpy(buffer, block + 4 + fp, 1);
     // increment the fp
     n->fp++;
-    return 0; 
+	// return 0 if successful, -1 if the file is at the end
+	return 0;
 }
 
 int tfs_seek(fileDescriptor FD, int offset){
@@ -381,6 +392,17 @@ void tfs_displayFragments() {
 			printf("Block %d is free\n", i);
 		} else if (buffer[0] == 2) {
 			printf("Block %d is an inode\n", i);
+//			// print the name of the file
+//			char iname[9];
+//			strncpy(iname, buffer + 4, 8);
+//			iname[8] = '\0';
+//			printf("Name: %s\n", iname);
+//			// print the size of the file
+//			printf("Size: %d\n", buffer[13]);
+//			// print the first data block
+//			printf("First data block: %d\n", buffer[2]);
+
+
 		} else if (buffer[0] == 3) {
 			printf("Block %d is a data block\n", i);
 		}

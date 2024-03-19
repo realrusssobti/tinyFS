@@ -1,52 +1,46 @@
 #include "libTinyFS.h"
+#include <stdio.h>
+
 
 // THis file prints if buff is called!
-int main(int argc, char *argv[]) {
-    fileDescriptor t;
-    // test string to get readByte from
-    char buff[1] = " ";
+	int main(int argc, char *argv[]) {
+		fileDescriptor fd1, fd2, fd3;
+		char buff[1] = " ";
+		char test[400] = "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest";
 
-    // test string greater than 256
-    char test[400] = "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest";
-    
-    // make a file called file
-    tfs_mkfs("file", BLOCKSIZE * 5);
+		// Create a file system
+		tfs_mkfs("file", BLOCKSIZE * 20);
 
-    // mount it
-    tfs_mount("file");
+		// Mount the file system
+		tfs_mount("file");
 
-    // open a fake file called file2
-    t = tfs_openFile("file2");
-    // write the long string to it
-    tfs_writeFile(t,test, 400);
+		// Open three files
+		fd1 = tfs_openFile("file1");
+		fd2 = tfs_openFile("file2");
+		fd3 = tfs_openFile("file3");
 
-    // remove the long string
-    tfs_deleteFile(t);
+		// Write to the files
+		tfs_writeFile(fd1, test, 400);
+		tfs_writeFile(fd2, "this is a phrase", 17);
+		tfs_writeFile(fd3, "another phrase", 14);
 
-    // same process as above till like 28
-    tfs_mount("file");
-    t = tfs_openFile("file2");
-    tfs_writeFile(t, "this is a phrase", 17);
+		// Delete the second file to create a hole in the disk
+		tfs_deleteFile(fd2);
 
-    // read the first byte of the short string
-    tfs_readByte(t,buff);
-    printf("%s\n", buff);
-    
-    // read the second byte
-    tfs_readByte(t,buff);
-    printf("%s\n", buff);
+		// Display the fragments before defragmentation
+		printf("Before defragmentation:\n");
+		tfs_displayFragments();
 
-    // move to the 7th byte
-    tfs_seek(t, 7);
-    
-    // read the 7th
-    tfs_readByte(t,buff);
-    printf("%s\n", buff);
-    
-    //read the 8th
-    tfs_readByte(t,buff);
-    printf("%s\n", buff);
-    //close the file.
-    tfs_closeFile(t);
-    return 0;
-}
+		// Defragment the disk
+		tfs_defrag();
+
+		// Display the fragments after defragmentation
+		printf("After defragmentation:\n");
+		tfs_displayFragments();
+
+		// Close the files
+		tfs_closeFile(fd1);
+		tfs_closeFile(fd3);
+
+		return 0;
+	}

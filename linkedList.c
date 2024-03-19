@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "linkedList.h"
-
+#include <stdlib.h>
 list_t * makeList() {
     list_t * list = malloc(sizeof(list_t));
     list->head = NULL;
@@ -11,6 +11,7 @@ list_t * makeList() {
 
 // frees the data
 int cleanListFree(list_t * list) {
+	if (list == NULL) return -1;
     node_t * curr = list->head, * temp;
     while (curr != NULL) {
         temp = curr;
@@ -21,10 +22,10 @@ int cleanListFree(list_t * list) {
     list->end = NULL;
     list->head = NULL;
     free(list);
-    return 1; 
+    return 1;
 }
 
-// Doesn't free the data 
+// Doesn't free the data
 int cleanList(list_t * list) {
     node_t * curr = list->head, * temp;
     while (curr != NULL) {
@@ -33,7 +34,7 @@ int cleanList(list_t * list) {
         free(temp);
     }
     free(list);
-    return 1; 
+    return 1;
 }
 
 int addtoList(list_t *list, void * data) {
@@ -63,6 +64,7 @@ int addtoStart(list_t *list, void * data) {
 */
 
 void * removeVal(fileDescriptor FD, list_t *list) {
+	if (list == NULL) return NULL;
     int i;
     node_t * node = list->head;
     void * data;
@@ -73,7 +75,7 @@ void * removeVal(fileDescriptor FD, list_t *list) {
         temp = node;
         node = node->next;
         n = node->data;
-        
+
     }
     if (temp == NULL) {
         list->head = curr->next;
@@ -91,16 +93,19 @@ void * removeVal(fileDescriptor FD, list_t *list) {
 
 /* Used to find the FD in the file list*/
 void * searchListFD(list_t *list, fileDescriptor fd) {
-    int i;
-    node_t * node = list->head;
-    resNode *n = node->data;
-    while (fd != n->fd) {
-        node = node->next;
-        n = node->data;
-    }
-    if (node != NULL) {
-        return n;
-    }
-    return NULL;
+	node_t * node = list->head;
+	resNode *n;
 
+	while (node != NULL) {
+		n = node->data;
+		if (n != NULL) {
+			if (n->fd == fd) {
+				return n;
+			}
+		}
+
+		node = node->next;
+	}
+
+	return NULL;
 }

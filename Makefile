@@ -1,4 +1,4 @@
-CC = gcc
+makeCC = gcc
 CFLAGS = -Wall -g
 PROG = tinyFSDemo
 OBJS = tinyFSDemo.o libTinyFS.o libDisk.o linkedList.o

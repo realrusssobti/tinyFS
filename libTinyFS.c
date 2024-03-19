@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 /*
@@ -183,11 +184,12 @@ int tfs_writeFile(fileDescriptor FD,char *buffer, int size){
     resNode *n;
     // checks if the file is in the FD.
     n = searchListFD(fileTable, FD);
-    inode = n->fd;
+
     if (n == NULL) {
         return -1;
         //error
     }
+	inode = n->fd;
     // read the inode to block
     readBlock(mounted, inode, block);
     // read the superblock to super
@@ -247,6 +249,10 @@ int tfs_deleteFile(fileDescriptor FD){
     int nextBlock, inode, curr, former;
     resNode *n;
     n = searchListFD(fileTable, FD);
+	if (n == NULL) {
+		return -1;
+		//error
+	}
     inode = n->fd;
     if (inode == NULL) {
         return -1;
@@ -353,10 +359,72 @@ int checkFileExists(char * name) {
         // if the block type is inode
         if (buffer[0] == 2) {
             // copy the filename into check
-            strncpy(check, buffer[4], 8);
+            strncpy(check, &buffer[4], 8);
             // if its the same name, return it
             if (strcmp(name, check) == 0) return i;
         }
     }
     return 0;
+}
+
+void tfs_displayFragments() {
+	printf("Displaying fragments:\n");
+	int i;
+	int diskSize = lseek(mounted, 0, SEEK_END) / 256;
+	// buffer for grabbing blocks
+	uint8_t buffer[256], check[8];
+	for (i = 1; i < diskSize; i++) {
+		// read block into the buffer
+		readBlock(mounted, i, buffer);
+		// check what type of block it is
+		if (buffer[0] == 4) {
+			printf("Block %d is free\n", i);
+		} else if (buffer[0] == 2) {
+			printf("Block %d is an inode\n", i);
+		} else if (buffer[0] == 3) {
+			printf("Block %d is a data block\n", i);
+		}
+		else {
+			printf("Block %d is of unknown type\n", i);
+		}
+	}
+	return;
+}
+
+void tfs_defrag() {
+	int diskSize = lseek(mounted, 0, SEEK_END) / BLOCKSIZE;
+	uint8_t buffer[BLOCKSIZE];
+	int freeBlockIndex = -1;
+
+	// Find the first free block
+	for (int i = 0; i < diskSize; i++) {
+		readBlock(mounted, i, buffer);
+		if (buffer[0] == 4) {
+			freeBlockIndex = i;
+			break;
+		}
+	}
+
+	// If there are no free blocks, no need to defrag
+	if (freeBlockIndex == -1) return;
+
+	// Move all occupied blocks to the front
+	for (int i = freeBlockIndex + 1; i < diskSize; i++) {
+		readBlock(mounted, i, buffer);
+		if (buffer[0] != 4) {
+			// Swap the occupied block with the free block
+			uint8_t freeBlock[BLOCKSIZE] = {4, 'D', 0};
+			writeBlock(mounted, i, freeBlock);
+			writeBlock(mounted, freeBlockIndex, buffer);
+
+			// Find the next free block
+			for (int j = freeBlockIndex + 1; j < diskSize; j++) {
+				readBlock(mounted, j, buffer);
+				if (buffer[0] == 4) {
+					freeBlockIndex = j;
+					break;
+				}
+			}
+		}
+	}
 }

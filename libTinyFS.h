@@ -4,42 +4,41 @@
 #include "tinyFS.h"
 #include "linkedList.h"
 
-#define uint8_t unsigned char
 #include <time.h>
 // These are the different kinds of blocks: SuperBlock, Inode, Data, Free
 typedef struct superBlock{
-	uint8_t Type;
-	uint8_t magicNumber;
-	uint8_t rootBlockNumber;
-	uint8_t freeBlocksRoot;
+	char Type;
+	char magicNumber;
+	char rootBlockNumber;
+	char freeBlocksRoot;
 	char empty[BLOCKSIZE - 4];
 
 } superBlock;
 
 typedef struct inode{
-	uint8_t Type;
-	uint8_t magicNumber;
+	char Type;
+	char magicNumber;
 	char name[FILENAME_LEN +1];
-	uint8_t startBlock;
-	uint8_t nextInode;
-	uint8_t fp;
+	char startBlock;
+	char nextInode;
+	char fp;
 	time_t creationTime;
 	time_t lastAccessTime;
-	uint8_t empty[BLOCKSIZE - 14 - 2*sizeof (time_t)];
+	char empty[BLOCKSIZE - 14 - 2*sizeof (time_t)];
 } inode;
 
 typedef struct DataBlock{
-	uint8_t Type;
-	uint8_t magicNumber;
-	uint8_t data[BLOCKSIZE - 3];
-	uint8_t nextBlock;
+	char Type;
+	char magicNumber;
+	char data[BLOCKSIZE - 3];
+	char nextBlock;
 } DataBlock;
 
 typedef struct freeBlock{
-	uint8_t Type;
-	uint8_t magicNumber;
-	uint8_t nextFreeBlock;
-	uint8_t empty[BLOCKSIZE - 3];
+	char Type;
+	char magicNumber;
+	char nextFreeBlock;
+	char empty[BLOCKSIZE - 3];
 } freeBlock;
 
 
@@ -106,4 +105,9 @@ int tfs_readByte(fileDescriptor FD, char *buffer);
 success/error codes.*/
 int tfs_seek(fileDescriptor FD, int offset);
 
+
+int checkFileExists(char * name);
 #endif
+
+void tfs_displayFragments(void);
+void tfs_defrag(void);

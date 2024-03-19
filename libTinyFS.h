@@ -2,6 +2,7 @@
 #define LIBTINYFS
 
 #include "tinyFS.h"
+#include "linkedList.h"
 
 #define uint8_t unsigned char
 #include <time.h>

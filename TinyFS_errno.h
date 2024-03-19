@@ -24,5 +24,6 @@
 #define EINVALIDTFS   -13 /* Invalid Mount   */
 #define EMOUNTED      -14 /* TFS already mounted*/
 #define EUNMOUNTED    -15 /* TFS already mounted*/
+#define EDISKFAILED   -16 /* TFS already mounted*/
 
 #endif

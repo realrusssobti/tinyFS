@@ -4,6 +4,7 @@
 list_t * makeList() {
     list_t * list = malloc(sizeof(list_t));
     list->head = NULL;
+    list->end = NULL;
     list->size = 0;
     return list;
 }
@@ -14,9 +15,11 @@ int cleanListFree(list_t * list) {
     while (curr != NULL) {
         temp = curr;
         curr = curr->next;
-        free(temp->data);
         free(temp);
+        temp = NULL;
     }
+    list->end = NULL;
+    list->head = NULL;
     free(list);
     return 1; 
 }
@@ -37,6 +40,13 @@ int addtoList(list_t *list, void * data) {
     node_t * newNode = malloc(sizeof(node_t));
     if (!newNode) return -1;
 
+    if (list->head == NULL) {
+        list->head = newNode;
+        list->end = newNode;
+        list->size++;
+        newNode->data = data;
+        return 1;
+    }
     list->end->next = newNode;
     list->end = newNode;
     list->size++;
@@ -52,27 +62,27 @@ int addtoStart(list_t *list, void * data) {
 }
 */
 
-void * removeVal(int idx, list_t *list) {
+void * removeVal(fileDescriptor FD, list_t *list) {
     int i;
+    node_t * node = list->head;
     void * data;
-    node_t * temp, *curr = list->head;
-    if (list->size - 1 < idx) {
-        return -1;
+    node_t * temp = NULL, *curr = list->head;
+    resNode *n = node->data;
+    for (i = 0; i < list->size; i++) {
+        if (n->fd == FD) break;
+        temp = node;
+        node = node->next;
+        n = node->data;
+        
     }
-
-    if (i == 0) {
-        temp = curr->next;
-        free(curr);
-        list->head = temp;
-        return 1;
+    if (temp == NULL) {
+        list->head = curr->next;
+    } else {
+        temp->next = curr->next;
     }
-
-    for (i = 0; i < idx; i++) {
-        temp = curr;
-        curr = curr->next;
+    if (curr == list->end) {
+        list->end = temp;
     }
-
-    temp->next = curr->next;
     data = curr->data;
     free(curr);
     list->size--;
@@ -80,6 +90,17 @@ void * removeVal(int idx, list_t *list) {
 }
 
 /* Used to find the FD in the file list*/
-char * searchList(list_t list, int fd) {
+void * searchListFD(list_t *list, fileDescriptor fd) {
+    int i;
+    node_t * node = list->head;
+    resNode *n = node->data;
+    while (fd != n->fd) {
+        node = node->next;
+        n = node->data;
+    }
+    if (node != NULL) {
+        return n;
+    }
+    return NULL;
 
 }

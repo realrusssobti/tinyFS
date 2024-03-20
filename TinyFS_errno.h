@@ -26,4 +26,8 @@
 #define EUNMOUNTED    -15 /* TFS already mounted*/
 #define EDISKFAILED   -16 /* TFS already mounted*/
 
+#define EPASSTOOLONG   -17 /* TFS already mounted*/
+
+#define EWRONGPASSWORD   -18 /* TFS already mounted*/
+
 #endif

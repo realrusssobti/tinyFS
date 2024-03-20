@@ -1,5 +1,7 @@
+#include "aes.h"
 #include "tinyFS.h"
 #include "libTinyFS.h"
+#include <openssl/evp.h>
 #include "libDisk.h"
 #include "linkedList.h"
 #include "TinyFS_errno.h"
@@ -28,12 +30,19 @@ list_t *fileTable = NULL;
 // the max index of the filetable.
 int fdmax = 1;
 
-int tfs_mkfs(char *filename, int nBytes){
+char * finalPass[16];
+uint8_t key[] = { 0x60, 0x3d, 0xeb, 0x10, 0x15, 0xca, 0x71, 0xbe, 0x2b, 0x73, 0xae, 0xf0, 0x85, 0x7d, 0x77, 0x81,
+                      0x1f, 0x35, 0x2c, 0x07, 0x3b, 0x61, 0x08, 0xd7, 0x2d, 0x98, 0x10, 0xa3, 0x09, 0x14, 0xdf, 0xf4 };
+uint8_t iv[]  = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
+
+int tfs_mkfs(char *filename, int nBytes, char * password){
     // open the disk for working
     int diskNum = openDisk(filename, nBytes), i;
     if (diskNum < 0) {
         return EDISKFAILED;
     }
+
+    if (strlen(password) > 16) return EPASSTOOLONG;
 
     // make a buffer for adding things
     uint8_t *buffer = calloc(sizeof(char), 256);
@@ -44,8 +53,23 @@ int tfs_mkfs(char *filename, int nBytes){
     // for the free block list
     buffer[2] = 1;
 
+    strncpy(buffer + 20, password, 16);
+
+    struct AES_ctx ctx;
+    printf("%s\n",buffer);
+    AES_init_ctx_iv(&ctx, key, iv);
+    AES_CBC_encrypt_buffer(&ctx, buffer, 256);
+    
+
     //write the contents to the super block.
+
     writeBlock(diskNum, 0, buffer);
+    AES_CBC_decrypt_buffer(ctx, buffer, 256);
+    
+    printf("%s\n\n",buffer);
+    
+    AES_init_ctx_iv(ctx, key, iv);
+
     
     // set the type for the empty blocks
     buffer[0] = 4;
@@ -60,19 +84,37 @@ int tfs_mkfs(char *filename, int nBytes){
             buffer[2] = 0;
         }
         // write the empty block
+        AES_CBC_encrypt_buffer(ctx, buffer, 256);
         writeBlock(diskNum, i, buffer);
+        AES_CBC_decrypt_buffer(ctx, buffer, 256);
     }
     free(buffer);
     // open the disk if you want to use it later.
     closeDisk(diskNum);
+    free(ctx);
     return 1;
 }
 
-int tfs_mount(char *diskname){
+int tfs_mount(char *diskname, char * password){
     // Checks if there is something mounted
     if (mounted != -1) {
         return EMOUNTED;
     }
+
+    uint8_t super[BLOCKSIZE];
+    readBlock(mounted, 0, super);
+
+    struct AES_ctx * ctx = malloc(sizeof(struct AES_ctx));
+    AES_init_ctx_iv(ctx, key, iv);
+    AES_CBC_decrypt_buffer(ctx, super, 256);
+
+    
+    printf("%s\n",super);
+    printf("%s\n",password);
+    if (strncmp(super + 20,password,16) != 0) {
+        return EWRONGPASSWORD;
+    }
+    strncpy(finalPass, super + 20, 16); 
     // opens up disk. To be closed by unount
     int diskNum = openDisk(diskname, 0);
     if (diskNum < 0) {

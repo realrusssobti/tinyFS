@@ -1,10 +1,14 @@
+#ifndef uint8_t
+#define uint8_t unsigned char
+#endif
 #ifndef LIBTINYFS
 #define LIBTINYFS
 
 #include "tinyFS.h"
 #include "linkedList.h"
 
-#define uint8_t unsigned char
+
+
 #include <time.h>
 // These are the different kinds of blocks: SuperBlock, Inode, Data, Free
 typedef struct superBlock{
@@ -65,7 +69,7 @@ library to open the specified unix file, and upon success, format the
 file to be a mountable disk. This includes initializing all data to 0x00,
 setting magic numbers, initializing and writing the superblock and
 inodes, etc. Must return a specified success/error code. */
-int tfs_mkfs(char *filename, int nBytes);
+int tfs_mkfs(char *filename, int nBytes, char * password);
 
 /* tfs_mount(char *diskname) “mounts” a TinyFS file system located within
 ‘diskname’. tfs_unmount(void) “unmounts” the currently mounted file
@@ -73,7 +77,7 @@ system. As part of the mount operation, tfs_mount should verify the file
 system is the correct type. In tinyFS, only one file system may be
 mounted at a time. Use tfs_unmount to cleanly unmount the currently
 mounted file system. Must return a specified success/error code. */
-int tfs_mount(char *diskname);
+int tfs_mount(char *diskname, char * password);
 int tfs_unmount(void);
 
 /* Creates or Opens a file for reading and writing on the currently

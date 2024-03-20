@@ -10,11 +10,11 @@ int main(int argc, char *argv[]) {
     char test[400] = "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest";
     
     // make a file called file
-    tfs_mkfs("file", BLOCKSIZE * 5);
-
+    tfs_mkfs("file", BLOCKSIZE * 5, "haha");
+    
     // mount it
-    tfs_mount("file");
-
+    printf("%d\n",tfs_mount("file", "haha"));
+    return 1;
     // open a fake file called file2
     t = tfs_openFile("file2");
     // write the long string to it
@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     tfs_deleteFile(t);
 
     // same process as above till like 28
-    tfs_mount("file");
+    tfs_mount("file", "bad");
     t = tfs_openFile("file2");
     tfs_writeFile(t, "this is a phrase", 17);
 

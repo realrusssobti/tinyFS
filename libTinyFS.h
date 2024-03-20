@@ -52,10 +52,11 @@ typedef struct DynamicResourceTable{
 } DynamicResourceTable;
 
 typedef struct resourceTableNode{
-   fileDescriptor fd;
-   int inodeIndex;
-   char name[FILENAME_LEN];
-   int fp;
+	int fd;
+	int fp;
+	int inodeIndex;
+	char name[FILENAME_LEN];
+	int mode; // 0 for read-write, 1 for read-only
 } resNode;
 
 /* Makes a blank TinyFS file system of size nBytes on the unix file
@@ -107,7 +108,12 @@ int tfs_seek(fileDescriptor FD, int offset);
 
 
 int checkFileExists(char * name);
+int tfs_makeRO(char *name);
+int tfs_makeRW(char *name);
+
 #endif
 
 void tfs_displayFragments(void);
 void tfs_defrag(void);
+int tfs_writeByte(fileDescriptor FD, unsigned int data);
+

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakePresetLoader">{
+  &quot;useNewFormat&quot;: true
+}</component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="add6da8b-2d65-4de8-ad7a-9cf5708c2279" name="Changes" comment="DEFRAG WORKS&#10;ALSO CORE FEATURES WORK NOW RAHHHHH">
+      <change beforePath="$PROJECT_DIR$/file" beforeDir="false" afterPath="$PROJECT_DIR$/file" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libTinyFS.c" beforeDir="false" afterPath="$PROJECT_DIR$/libTinyFS.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libTinyFS.h" beforeDir="false" afterPath="$PROJECT_DIR$/libTinyFS.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libTinyFS.o" beforeDir="false" afterPath="$PROJECT_DIR$/libTinyFS.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linkedList.c" beforeDir="false" afterPath="$PROJECT_DIR$/linkedList.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linkedList.h" beforeDir="false" afterPath="$PROJECT_DIR$/linkedList.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linkedList.o" beforeDir="false" afterPath="$PROJECT_DIR$/linkedList.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinyFSDemo" beforeDir="false" afterPath="$PROJECT_DIR$/tinyFSDemo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinyFSDemo.c" beforeDir="false" afterPath="$PROJECT_DIR$/tinyFSDemo.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tinyFSDemo.o" beforeDir="false" afterPath="$PROJECT_DIR$/tinyFSDemo.o" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="finishingFunctions" />
+      </map>
+    </option>
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="789f73dq" />
+  </component>
+  <component name="MakefileLocalSettings">
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
+      </map>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2022" />
+    <option name="minorVersion" value="3.2" />
+  </component>
+  <component name="ProjectId" id="2dnjsdypI142gM9GBC2J3wKKIrN" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager" selected="Makefile Target.all">
+    <configuration name="tfsTest.c" type="CppFileRunConfiguration" factoryName="CppFileRunConfiguration" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="tinyFS" TARGET_NAME="tfsTest.c" CONFIG_NAME="tfsTest.c">
+      <option name="sourceFile" value="tfsTest.c" />
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.runfile.CppFileBuildBeforeRunTaskProvider$BasicBuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="all" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="all" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="clean" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="clean" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="tfsTest" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="tfsTest" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="C/C++ File.tfsTest.c" />
+      <item itemvalue="Makefile Target.all" />
+      <item itemvalue="Makefile Target.tfsTest" />
+      <item itemvalue="Makefile Target.clean" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Makefile Target.clean" />
+        <item itemvalue="C/C++ File.tfsTest.c" />
+        <item itemvalue="C/C++ File.tfsTest.c" />
+        <item itemvalue="Makefile Target.clean" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="add6da8b-2d65-4de8-ad7a-9cf5708c2279" name="Changes" comment="" />
+      <created>1710650944918</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1710650944918</updated>
+      <workItem from="1710650947328" duration="5793000" />
+      <workItem from="1710820621856" duration="11710000" />
+      <workItem from="1710892934496" duration="5448000" />
+    </task>
+    <task id="LOCAL-00001" summary="added structs for the different type of blocks in the FS">
+      <created>1710652904070</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1710652904070</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Fixed bugs, added &quot;fragmentation info and defragmentation&quot;">
+      <created>1710823642714</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1710823642714</updated>
+    </task>
+    <task id="LOCAL-00003" summary="DEFRAG WORKS&#10;ALSO CORE FEATURES WORK NOW RAHHHHH">
+      <created>1710831490331</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1710831490331</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="added structs for the different type of blocks in the FS" />
+    <MESSAGE value="Fixed bugs, added &quot;fragmentation info and defragmentation&quot;" />
+    <MESSAGE value="DEFRAG WORKS&#10;ALSO CORE FEATURES WORK NOW RAHHHHH" />
+    <option name="LAST_COMMIT_MESSAGE" value="DEFRAG WORKS&#10;ALSO CORE FEATURES WORK NOW RAHHHHH" />
+  </component>
+</project>

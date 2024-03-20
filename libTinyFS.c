@@ -193,6 +193,7 @@ int tfs_writeFile(fileDescriptor FD,char *buffer, int size){
 		return -1;
 		//error
 	}
+
 	inode = n->fd;
 	// read the inode to block
 	readBlock(mounted, inode, block);
@@ -256,6 +257,9 @@ int tfs_deleteFile(fileDescriptor FD){
 	if (n == NULL) {
 		return -1;
 		//error
+	}
+	if (n->mode == 1) {
+		return -1; // File is read-only
 	}
 	inode = n->fd;
 	if (inode == NULL) {
@@ -449,4 +453,63 @@ void tfs_defrag() {
 			}
 		}
 	}
+}
+
+
+
+int tfs_makeRO(char *name) {
+	// search for the file in the file table
+	resNode *node = searchListName(fileTable, name);
+	if (node == NULL) {
+		return -1; // File not found
+	}
+	node->mode = 1; // Set to read-only
+	return 0;
+}
+
+int tfs_makeRW(char *name) {
+	resNode *node = searchListName(fileTable, name);
+	if (node == NULL) {
+		return -1; // File not found
+	}
+	node->mode = 0; // Set to read-write
+	return 0;
+}
+
+
+int tfs_writeByte(fileDescriptor FD, unsigned int data) {
+	resNode *node = searchListFD(fileTable, FD);
+	if (node == NULL) {
+		printf("Error: File not found\n");
+		return -1; // File not found
+	}
+	if (node->mode == 1) {
+		printf("Error: File is read-only\n");
+		return -1; // File is read-only
+	}
+
+	// Calculate which block to go to
+	int bnum = node->fp / (BLOCKSIZE - 4);
+	int fp = node->fp - (bnum * (BLOCKSIZE - 4));
+
+	// Load up the block
+	uint8_t block[BLOCKSIZE] = "";
+	int nextBlock, i;
+	readBlock(mounted, node->inodeIndex, block);
+	for (i = 0; i < bnum + 1; i++) {
+		nextBlock = block[2];
+		readBlock(mounted, nextBlock, block);
+	}
+
+	// Write the byte at the current file pointer position
+	block[4 + fp] = (uint8_t)data;
+
+	// Write the block back to the disk
+	writeBlock(mounted, nextBlock, block);
+
+	// Increment the file pointer
+	node->fp++;
+
+	printf("Wrote byte %c to file %s at position %d\n", data, node->name, fp); // Logging the end of the function
+	return 0;
 }

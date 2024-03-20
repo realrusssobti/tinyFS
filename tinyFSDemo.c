@@ -56,6 +56,26 @@ int main(int argc, char *argv[]) {
     //close the file.
     tfs_closeFile(t);
 
+	// create a new file
+	t = tfs_openFile("file3");
+	// write to it
+	tfs_writeFile(t, "this is a phrase", 17);
+	// Make it read only
+	tfs_makeRO("file3");
+	// try to write to it
+	tfs_writeByte(t, 'a');
+	// make it read write
+	tfs_makeRW("file3");
+	// write to it
+	tfs_seek(t, 0);
+	tfs_writeByte(t, 'a');
+	// seek to the 0th byte
+	tfs_seek(t, 0);
+	// read the first byte
+	tfs_readByte(t,buff);
+	// close it
+	tfs_closeFile(t);
+
 
     return 0;
 }

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "linkedList.h"
 #include <stdlib.h>
+#include <string.h>
 list_t * makeList() {
     list_t * list = malloc(sizeof(list_t));
     list->head = NULL;
@@ -109,6 +110,21 @@ void * searchListFD(list_t *list, fileDescriptor fd) {
 		node = node->next;
 	}
 
+	return NULL;
+}
+
+void * searchListName(list_t *list, char *name) {
+	node_t * node = list->head;
+	resNode *n;
+	while (node != NULL) {
+		n = node->data;
+		if (n != NULL) {
+			if (strcmp(n->name, name) == 0) {
+				return n;
+			}
+		}
+		node = node->next;
+	}
 	return NULL;
 }
 void printList(list_t *list) {

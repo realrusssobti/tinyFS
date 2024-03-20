@@ -57,6 +57,9 @@ typedef struct resourceTableNode{
 	int inodeIndex;
 	char name[FILENAME_LEN];
 	int mode; // 0 for read-write, 1 for read-only
+	time_t creationTime;
+	time_t modificationTime;
+	time_t accessTime;
 } resNode;
 
 /* Makes a blank TinyFS file system of size nBytes on the unix file
@@ -117,3 +120,7 @@ void tfs_displayFragments(void);
 void tfs_defrag(void);
 int tfs_writeByte(fileDescriptor FD, unsigned int data);
 
+void tfs_readFileInfo(fileDescriptor FD) ;
+
+int tfs_rename(fileDescriptor FD, char* newName);
+void tfs_readdir();

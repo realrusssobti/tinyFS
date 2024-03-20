@@ -12,14 +12,16 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="add6da8b-2d65-4de8-ad7a-9cf5708c2279" name="Changes" comment="DEFRAG WORKS&#10;ALSO CORE FEATURES WORK NOW RAHHHHH">
+    <list default="true" id="add6da8b-2d65-4de8-ad7a-9cf5708c2279" name="Changes" comment="Added Read/Write check lfg">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/diskTest" beforeDir="false" afterPath="$PROJECT_DIR$/diskTest" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/file" beforeDir="false" afterPath="$PROJECT_DIR$/file" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frag_test" beforeDir="false" afterPath="$PROJECT_DIR$/frag_test" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/libTinyFS.c" beforeDir="false" afterPath="$PROJECT_DIR$/libTinyFS.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/libTinyFS.h" beforeDir="false" afterPath="$PROJECT_DIR$/libTinyFS.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/libTinyFS.o" beforeDir="false" afterPath="$PROJECT_DIR$/libTinyFS.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/linkedList.c" beforeDir="false" afterPath="$PROJECT_DIR$/linkedList.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/linkedList.h" beforeDir="false" afterPath="$PROJECT_DIR$/linkedList.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/linkedList.o" beforeDir="false" afterPath="$PROJECT_DIR$/linkedList.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tfsTest" beforeDir="false" afterPath="$PROJECT_DIR$/tfsTest" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tinyFSDemo" beforeDir="false" afterPath="$PROJECT_DIR$/tinyFSDemo" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tinyFSDemo.c" beforeDir="false" afterPath="$PROJECT_DIR$/tinyFSDemo.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tinyFSDemo.o" beforeDir="false" afterPath="$PROJECT_DIR$/tinyFSDemo.o" afterDir="false" />
@@ -129,7 +131,7 @@
       <updated>1710650944918</updated>
       <workItem from="1710650947328" duration="5793000" />
       <workItem from="1710820621856" duration="11710000" />
-      <workItem from="1710892934496" duration="5448000" />
+      <workItem from="1710892934496" duration="6949000" />
     </task>
     <task id="LOCAL-00001" summary="added structs for the different type of blocks in the FS">
       <created>1710652904070</created>
@@ -152,7 +154,14 @@
       <option name="project" value="LOCAL" />
       <updated>1710831490331</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Added Read/Write check lfg">
+      <created>1710915410808</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1710915410808</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -173,6 +182,7 @@
     <MESSAGE value="added structs for the different type of blocks in the FS" />
     <MESSAGE value="Fixed bugs, added &quot;fragmentation info and defragmentation&quot;" />
     <MESSAGE value="DEFRAG WORKS&#10;ALSO CORE FEATURES WORK NOW RAHHHHH" />
-    <option name="LAST_COMMIT_MESSAGE" value="DEFRAG WORKS&#10;ALSO CORE FEATURES WORK NOW RAHHHHH" />
+    <MESSAGE value="Added Read/Write check lfg" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Read/Write check lfg" />
   </component>
 </project>

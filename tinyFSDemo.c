@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     char test[400] = "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest";
 
     // make a file called file
-    tfs_mkfs("file", BLOCKSIZE * 5);
+    tfs_mkfs("file", BLOCKSIZE * 10);
 
     // mount it
     tfs_mount("file");
@@ -54,8 +54,7 @@ int main(int argc, char *argv[]) {
 	tfs_readByte(t,buff);
 	printf("%s\n", buff);
     //close the file.
-    tfs_closeFile(t);
-
+	tfs_closeFile(t);
 	// create a new file
 	t = tfs_openFile("file3");
 	// write to it
@@ -73,8 +72,19 @@ int main(int argc, char *argv[]) {
 	tfs_seek(t, 0);
 	// read the first byte
 	tfs_readByte(t,buff);
+	// read file info
+	tfs_readFileInfo(t);
+
 	// close it
+	printf("Renaming file3 to file69\n");
+	tfs_rename(t, "file69");
+	// demo the readdir
+	tfs_readdir();
+	tfs_displayFragments();
 	tfs_closeFile(t);
+
+	tfs_unmount();
+
 
 
     return 0;

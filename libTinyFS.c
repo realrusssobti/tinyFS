@@ -152,6 +152,8 @@ fileDescriptor tfs_openFile(char *name){
     newNode->fd = fdmax++;
     newNode->fp = 0; // CHANGE THIS
     newNode->inodeIndex = location;
+	newNode->mode = 0;
+	newNode->creationTime = time(NULL); // Set the creation time to the current time
     strncpy(newNode->name, name, FILENAME_LEN);
 
     // add to the list using linkedlist implementation
@@ -195,6 +197,7 @@ int tfs_writeFile(fileDescriptor FD,char *buffer, int size){
 	}
 
 	inode = n->fd;
+	n->modificationTime = time(NULL); // Set the modification time to the current time
 	// read the inode to block
 	readBlock(mounted, inode, block);
 	// read the superblock to super
@@ -317,6 +320,7 @@ int tfs_readByte(fileDescriptor FD, char *buffer){
 	}
     inode = n->fd;
     fp = n->fp;
+	n->accessTime = time(NULL); // Set the access time to the current time
     if (inode == NULL) {
         return -1;
         //error
@@ -487,6 +491,7 @@ int tfs_writeByte(fileDescriptor FD, unsigned int data) {
 		printf("Error: File is read-only\n");
 		return -1; // File is read-only
 	}
+	node->modificationTime = time(NULL); // Set the modification time to the current time
 
 	// Calculate which block to go to
 	int bnum = node->fp / (BLOCKSIZE - 4);
@@ -512,4 +517,69 @@ int tfs_writeByte(fileDescriptor FD, unsigned int data) {
 
 	printf("Wrote byte %c to file %s at position %d\n", data, node->name, fp); // Logging the end of the function
 	return 0;
+}
+
+void tfs_readFileInfo(fileDescriptor FD) {
+	resNode *node = searchListFD(fileTable, FD);
+	if (node == NULL) {
+		printf("Error: File not found\n");
+		return;
+	}
+
+	printf("File: %s\n", node->name);
+	printf("Creation time: %s", ctime(&(node->creationTime)));
+	printf("Modification time: %s", ctime(&(node->modificationTime)));
+	printf("Access time: %s", ctime(&(node->accessTime)));
+}
+
+int tfs_rename(fileDescriptor FD, char* newName) {
+	// Find the file in the file table
+	resNode *node = searchListFD(fileTable, FD);
+	if (node == NULL) {
+		return -1; // File not found
+	}
+
+	// Check if the file is open
+	if (node->fd < 0) {
+		return -1; // File is not open
+	}
+
+	// Update the name of the file in the inode block
+	uint8_t block[BLOCKSIZE] = "";
+	readBlock(mounted, node->inodeIndex, block);
+	strncpy(block + 4, newName, FILENAME_LEN);
+	writeBlock(mounted, node->inodeIndex, block);
+
+	// Update the name in the file table
+	strncpy(node->name, newName, FILENAME_LEN);
+
+	return 0;
+}
+
+void tfs_readdir() {
+	printf("Displaying files on system:\n");
+	int i;
+	int diskSize = lseek(mounted, 0, SEEK_END) / 256;
+	// buffer for grabbing blocks
+	uint8_t buffer[256], check[8];
+	for (i = 1; i < diskSize; i++) {
+		// read block into the buffer
+		readBlock(mounted, i, buffer);
+		// check what type of block it is
+		if (buffer[0] == 2) {
+//			printf("Block %d is an inode\n", i);
+			// print the name of the file
+			char iname[9];
+			strncpy(iname, buffer + 4, 8);
+			iname[8] = '\0';
+			printf("Name: %s\n", iname);
+//			// print the size of the file
+//			printf("Size: %d\n", buffer[13]);
+//			// print the first data block
+//			printf("First data block: %d\n", buffer[2]);
+
+		}}
+		return;
+
+
 }
